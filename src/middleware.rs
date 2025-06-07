@@ -36,7 +36,7 @@ impl VcrCacheMiddleware {
 struct CachedResponse {
     status: u16,
     headers: Vec<(String, String)>,
-    body: Vec<u8>,
+    body: String,
 }
 
 #[async_trait]
@@ -58,7 +58,7 @@ impl Middleware for VcrCacheMiddleware {
                 for (k, v) in cached.headers {
                     response_builder = response_builder.header(&k, &v);
                 }
-                let http_response = response_builder.body(cached.body).unwrap();
+                let http_response = response_builder.body(cached.body.into_bytes()).unwrap();
                 return Ok(Response::from(http_response));
             }
         }
@@ -74,16 +74,17 @@ impl Middleware for VcrCacheMiddleware {
             .map(|(k, v)| (k.to_string(), v.to_str().unwrap_or("").to_string()))
             .collect();
 
-        let body = response.bytes().await?.to_vec();
+        let bytes = response.bytes().await?;
+        let body_str = String::from_utf8_lossy(&bytes).to_string();
 
         // Save to cache
         let cached = CachedResponse {
             status,
             headers: headers.clone(),
-            body: body.clone(),
+            body: body_str.clone(),
         };
         fs::create_dir_all(&self.cache_dir).await.ok();
-        fs::write(&cache_path, serde_json::to_vec(&cached).unwrap())
+        fs::write(&cache_path, serde_json::to_string_pretty(&cached).unwrap())
             .await
             .ok();
 
@@ -92,7 +93,7 @@ impl Middleware for VcrCacheMiddleware {
         for (k, v) in headers {
             response_builder = response_builder.header(&k, &v);
         }
-        let http_response = response_builder.body(body).unwrap();
+        let http_response = response_builder.body(bytes.to_vec()).unwrap();
         Ok(Response::from(http_response))
     }
 }
