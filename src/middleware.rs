@@ -33,10 +33,23 @@ impl VcrCacheMiddleware {
 }
 
 #[derive(Serialize, Deserialize)]
+struct CachedRequest {
+    method: String,
+    url: String,
+    body: Option<String>,
+}
+
+#[derive(Serialize, Deserialize)]
 struct CachedResponse {
     status: u16,
     headers: Vec<(String, String)>,
     body: String,
+}
+
+#[derive(Serialize, Deserialize)]
+struct CachedEntry {
+    request: CachedRequest,
+    response: CachedResponse,
 }
 
 #[async_trait]
@@ -51,7 +64,8 @@ impl Middleware for VcrCacheMiddleware {
 
         // Try to load from cache
         if let Ok(bytes) = fs::read(&cache_path).await {
-            if let Ok(cached) = serde_json::from_slice::<CachedResponse>(&bytes) {
+            if let Ok(entry) = serde_json::from_slice::<CachedEntry>(&bytes) {
+                let cached = entry.response;
                 println!("Cache HIT for {}", req.url());
 
                 let mut response_builder = http::Response::builder().status(cached.status);
@@ -64,6 +78,12 @@ impl Middleware for VcrCacheMiddleware {
         }
 
         println!("Cache MISS for {}", req.url());
+
+        // Prepare request info for caching
+        let method = req.method().as_str().to_string();
+        let url = req.url().to_string();
+        let body = req.body().and_then(|b| b.as_bytes().map(|b| String::from_utf8_lossy(b).to_string()));
+        let cached_request = CachedRequest { method, url, body };
 
         // Make the actual request
         let response = next.run(req, extensions).await?;
@@ -78,13 +98,17 @@ impl Middleware for VcrCacheMiddleware {
         let body_str = String::from_utf8_lossy(&bytes).to_string();
 
         // Save to cache
-        let cached = CachedResponse {
+        let cached_response = CachedResponse {
             status,
             headers: headers.clone(),
             body: body_str.clone(),
         };
+        let entry = CachedEntry {
+            request: cached_request,
+            response: cached_response,
+        };
         fs::create_dir_all(&self.cache_dir).await.ok();
-        fs::write(&cache_path, serde_json::to_string_pretty(&cached).unwrap())
+        fs::write(&cache_path, serde_json::to_string_pretty(&entry).unwrap())
             .await
             .ok();
 
