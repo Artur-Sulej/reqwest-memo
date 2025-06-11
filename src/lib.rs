@@ -1,3 +1,3 @@
-mod middleware;
+pub mod middleware;
 
-pub use middleware::VcrCacheMiddleware;
+pub use middleware::MemoClientBuilder;
