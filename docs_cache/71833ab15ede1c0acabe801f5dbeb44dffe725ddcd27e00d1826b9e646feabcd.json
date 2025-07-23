@@ -1,0 +1,41 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://httpbin.org/post",
+    "body": "{\"query\":\"example\"}"
+  },
+  "response": {
+    "status": 200,
+    "headers": [
+      [
+        "date",
+        "Wed, 23 Jul 2025 23:22:37 GMT"
+      ],
+      [
+        "content-type",
+        "application/json"
+      ],
+      [
+        "content-length",
+        "403"
+      ],
+      [
+        "connection",
+        "keep-alive"
+      ],
+      [
+        "server",
+        "gunicorn/19.9.0"
+      ],
+      [
+        "access-control-allow-origin",
+        "*"
+      ],
+      [
+        "access-control-allow-credentials",
+        "true"
+      ]
+    ],
+    "body": "{\n  \"args\": {}, \n  \"data\": \"{\\\"query\\\":\\\"example\\\"}\", \n  \"files\": {}, \n  \"form\": {}, \n  \"headers\": {\n    \"Accept\": \"*/*\", \n    \"Content-Length\": \"19\", \n    \"Content-Type\": \"application/json\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-68816ebd-28d13bd13c8e77101caa8204\"\n  }, \n  \"json\": {\n    \"query\": \"example\"\n  }, \n  \"origin\": \"195.13.37.37\", \n  \"url\": \"https://httpbin.org/post\"\n}\n"
+  }
+}
