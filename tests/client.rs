@@ -1,4 +1,4 @@
-use reqwest_memo::ClientBuilder;
+use reqwest_replay::ClientBuilder;
 use serde_json::json;
 
 #[tokio::test]
