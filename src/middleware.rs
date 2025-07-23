@@ -7,12 +7,12 @@ use std::path::PathBuf;
 use task_local_extensions::Extensions;
 use tokio::fs;
 
-pub struct CacheMiddleware {
+struct CacheMiddleware {
     cache_dir: PathBuf,
 }
 
 impl CacheMiddleware {
-    pub fn new(cache_dir: impl Into<PathBuf>) -> Self {
+    fn new(cache_dir: impl Into<PathBuf>) -> Self {
         Self {
             cache_dir: cache_dir.into(),
         }
