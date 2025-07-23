@@ -1,8 +1,8 @@
-use memo::middleware::MemoClientBuilder;
+use reqwest_memo::ClientBuilder;
 
 #[tokio::main]
 async fn main() {
-    let client = MemoClientBuilder::new().build();
+    let client = ClientBuilder::new().build();
 
     let resp = client.get("https://httpbin.org/get").send().await.unwrap();
     println!("Status: {}", resp.status());

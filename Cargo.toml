@@ -1,16 +1,9 @@
 [package]
-name = "memo"
+name = "reqwest-memo"
 version = "0.1.0"
 edition = "2024"
 description = "A library for caching HTTP responses"
-
-[lib]
-name = "memo"
-path = "src/lib.rs"
-
-[[bin]]
-name = "memo-bin"
-path = "src/main.rs"
+license = "MIT"
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }

@@ -1,3 +1,2 @@
 pub mod middleware;
-
-pub use middleware::MemoClientBuilder;
+pub use middleware::ClientBuilder;

@@ -1,17 +1,17 @@
 use async_trait::async_trait;
 use reqwest::{Request, Response};
-use reqwest_middleware::{ClientBuilder, ClientWithMiddleware, Middleware, Next, Result};
+use reqwest_middleware::{Next, Result};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::path::PathBuf;
 use task_local_extensions::Extensions;
 use tokio::fs;
 
-pub struct VcrCacheMiddleware {
+pub struct CacheMiddleware {
     cache_dir: PathBuf,
 }
 
-impl VcrCacheMiddleware {
+impl CacheMiddleware {
     pub fn new(cache_dir: impl Into<PathBuf>) -> Self {
         Self {
             cache_dir: cache_dir.into(),
@@ -53,7 +53,7 @@ struct CachedEntry {
 }
 
 #[async_trait]
-impl Middleware for VcrCacheMiddleware {
+impl reqwest_middleware::Middleware for CacheMiddleware {
     async fn handle(
         &self,
         req: Request,
@@ -66,7 +66,11 @@ impl Middleware for VcrCacheMiddleware {
         if let Ok(bytes) = fs::read(&cache_path).await {
             if let Ok(entry) = serde_json::from_slice::<CachedEntry>(&bytes) {
                 let cached = entry.response;
-                println!("Cache HIT for {} (file: {})", req.url(), cache_path.display());
+                println!(
+                    "Cache HIT for {} (file: {})",
+                    req.url(),
+                    cache_path.display()
+                );
 
                 let mut response_builder = http::Response::builder().status(cached.status);
                 for (k, v) in cached.headers {
@@ -124,16 +128,14 @@ impl Middleware for VcrCacheMiddleware {
     }
 }
 
-// --- MemoClientBuilder for ergonomic client construction ---
-pub struct MemoClientBuilder {
+pub struct ClientBuilder {
     cache_dir: String,
-    // add more options here in the future
 }
 
-impl MemoClientBuilder {
+impl ClientBuilder {
     pub fn new() -> Self {
         Self {
-            cache_dir: "cache_dir".to_string(),
+            cache_dir: "cache".to_string(),
         }
     }
 
@@ -142,8 +144,10 @@ impl MemoClientBuilder {
         self
     }
 
-    pub fn build(self) -> ClientWithMiddleware {
-        let vcr = VcrCacheMiddleware::new(self.cache_dir);
-        ClientBuilder::new(reqwest::Client::new()).with(vcr).build()
+    pub fn build(self) -> reqwest_middleware::ClientWithMiddleware {
+        let mw = CacheMiddleware::new(self.cache_dir);
+        reqwest_middleware::ClientBuilder::new(reqwest::Client::new())
+            .with(mw)
+            .build()
     }
 }
