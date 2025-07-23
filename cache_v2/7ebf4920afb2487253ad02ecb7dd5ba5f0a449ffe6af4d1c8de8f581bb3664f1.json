@@ -1,0 +1,41 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "http://localhost:3000",
+    "body": null
+  },
+  "response": {
+    "status": 200,
+    "headers": [
+      [
+        "date",
+        "Wed, 11 Jun 2025 22:09:34 GMT"
+      ],
+      [
+        "content-type",
+        "application/json"
+      ],
+      [
+        "content-length",
+        "222"
+      ],
+      [
+        "connection",
+        "keep-alive"
+      ],
+      [
+        "server",
+        "gunicorn/19.9.0"
+      ],
+      [
+        "access-control-allow-origin",
+        "*"
+      ],
+      [
+        "access-control-allow-credentials",
+        "true"
+      ]
+    ],
+    "body": "{\n  \"args\": {\"proverb\": \"Crab wears jellyfish hat.\"}, \n  \"headers\": {\n    \"Accept\": \"*/*\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6849fe9e-5ec443ad22d8d58147b2c28b\"\n  }, \n  \"origin\": \"195.191.163.42\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+  }
+}

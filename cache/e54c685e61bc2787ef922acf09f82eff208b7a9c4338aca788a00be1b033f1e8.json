@@ -1,8 +1,8 @@
 {
   "request": {
-    "method": "GET",
-    "url": "https://httpbin.org/get",
-    "body": null
+    "method": "POST",
+    "url": "http://localhost:3000",
+    "body": "{\"query\":\"crab\"}"
   },
   "response": {
     "status": 200,
@@ -36,6 +36,6 @@
         "true"
       ]
     ],
-    "body": "{\n  \"args\": {}, \n  \"headers\": {\n    \"Accept\": \"*/*\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6849fe9e-5ec443ad22d8d58147b2c28b\"\n  }, \n  \"origin\": \"195.191.163.42\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
+    "body": "{\n  \"args\": {\"proverb\": \"Clumsy crab counts clouds.\"}, \n  \"headers\": {\n    \"Accept\": \"*/*\", \n    \"Host\": \"httpbin.org\", \n    \"X-Amzn-Trace-Id\": \"Root=1-6849fe9e-5ec443ad22d8d58147b2c28b\"\n  }, \n  \"origin\": \"195.191.163.42\", \n  \"url\": \"https://httpbin.org/get\"\n}\n"
   }
 }
