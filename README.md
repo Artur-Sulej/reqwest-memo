@@ -1,5 +1,6 @@
 # reqwest-replay
 
+[![CI Tests](https://github.com/artur-sulej/reqwest-replay/workflows/Rust/badge.svg)](https://github.com/artur-sulej/reqwest-replay/actions?query=branch%3Amain)
 [![Crates.io](https://img.shields.io/crates/v/reqwest-replay)](https://crates.io/crates/reqwest-replay)
 [![Documentation](https://docs.rs/reqwest-replay/badge.svg)](https://docs.rs/reqwest-replay)
 
